@@ -1,0 +1,91 @@
+<div class="container mx-auto mt-10">
+  <div class="wrapper bg-white rounded shadow w-full">
+    <div class="header flex justify-between border-b p-2">
+      <span class="text-lg font-bold">{{ month }} {{ year }}</span>
+      <div class="buttons">
+        <button class="p-1" (click)="prevMonth()">
+          <svg width="1em" fill="gray" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-left-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path fill-rule="evenodd" d="M8.354 11.354a.5.5 0 0 0 0-.708L5.707 8l2.647-2.646a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708 0z"/>
+            <path fill-rule="evenodd" d="M11.5 8a.5.5 0 0 0-.5-.5H6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5z"/>
+          </svg>
+        </button>
+        <button class="p-1" (click)="nextMonth()">
+          <svg width="1em" fill="gray" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path fill-rule="evenodd" d="M7.646 11.354a.5.5 0 0 1 0-.708L10.293 8 7.646 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0z"/>
+            <path fill-rule="evenodd" d="M4.5 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
+          </svg>
+        </button>
+        <button class="p-1 bg-blue-500 text-white rounded" (click)="openModal(null)">Agregar Evento</button>
+      </div>
+    </div>
+    <table class="w-full">
+      <thead>
+        <tr>
+          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">Domingo</th>
+          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">Lunes</th>
+          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">Martes</th>
+          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">Miércoles</th>
+          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">Jueves</th>
+          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">Viernes</th>
+          <th class="p-2 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">Sábado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let week of [0,1,2,3,4]">
+          <td *ngFor="let day of daysInMonth.slice(week * 7, (week + 1) * 7)" class="p-2 border cursor-pointer" (click)="openModal(day)">
+            <div class="flex flex-col h-40 mx-auto xl:w-40 lg:w-30 md:w-30 sm:w-full w-10 mx-auto overflow-hidden">
+              <div class="top h-5 w-full">
+                <span class="text-gray-500">{{ day.getDate() }}</span>
+              </div>
+              <div class="bottom flex-grow h-30 py-1 w-full cursor-pointer">
+                <div *ngFor="let event of getEvents(day)" class="event bg-purple-400 text-white rounded p-1 text-sm mb-1">
+                  <span class="event-name">{{ event.name }}</span>
+                  <span class="time">{{ event.startTime }} - {{ event.endTime }}</span>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="showModal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
+    <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50" (click)="closeModal()"></div>
+    
+    <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+      
+      <div class="modal-content py-4 text-left px-6">
+        <div class="flex justify-between items-center pb-3">
+          <p class="text-2xl font-bold">Agregar Evento</p>
+          <div class="modal-close cursor-pointer z-50" (click)="closeModal()">
+            <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+              <path d="M14.53 3.47a.75.75 0 0 0-1.06 0L9 7.94 4.53 3.47a.75.75 0 1 0-1.06 1.06L7.94 9 3.47 13.47a.75.75 0 1 0 1.06 1.06L9 10.06l4.47 4.47a.75.75 0 1 0 1.06-1.06L10.06 9l4.47-4.47a.75.75 0 0 0 0-1.06z"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="my-5">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="eventName">Nombre del Evento</label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="eventName" type="text" [(ngModel)]="eventName">
+
+          <label class="block text-gray-700 text-sm font-bold mb-2 mt-4" for="eventStartTime">Hora de Inicio</label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="eventStartTime" type="time" [(ngModel)]="eventStartTime">
+
+          <label class="block text-gray-700 text-sm font-bold mb-2 mt-4" for="eventEndTime">Hora de Fin</label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="eventEndTime" type="time" [(ngModel)]="eventEndTime">
+
+          <label class="block text-gray-700 text-sm font-bold mb-2 mt-4" for="eventDate">Fecha del Evento</label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="eventDate" type="date" [(ngModel)]="eventDate">
+        </div>
+
+        <div class="flex justify-end pt-2">
+          <button class="bg-blue-500 text-white px-4 py-2 rounded mr-2" (click)="saveEvent()">Guardar</button>
+          <button class="bg-gray-500 text-white px-4 py-2 rounded" (click)="closeModal()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

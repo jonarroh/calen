@@ -1,0 +1,11 @@
+.modal {
+  z-index: 40;
+}
+
+.modal-overlay {
+  z-index: 30;
+}
+
+.modal-container {
+  z-index: 40;
+}
